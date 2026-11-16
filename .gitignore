@@ -1,0 +1,24 @@
+# Build ve cikti klasorleri
+bin/
+obj/
+publish/
+publish-slim/
+setup-out/
+csharp-dotnet/bin/
+csharp-dotnet/obj/
+csharp-dotnet/publish/
+csharp-dotnet/publish-slim/
+csharp-dotnet/setup-out/
+
+# Calistirilabilir dosyalar, semboller ve arsivler
+*.exe
+*.pdb
+*.zip
+upx.exe
+
+# Kullanici yapilandirmasi ve gecici dosyalar
+qblauncher-config.json
+*.tmp
+.vs/
+.vscode/
+go-wails/

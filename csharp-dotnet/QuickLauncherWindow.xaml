@@ -1,0 +1,638 @@
+<Window x:Class="QBLauncherPro.QuickLauncherWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="QBLauncher Hızlı Seçim"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Focusable="True"
+        FontFamily="{StaticResource AppFont}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        RenderOptions.ClearTypeHint="Enabled"
+        RenderOptions.BitmapScalingMode="HighQuality"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="BgMain" Color="#121212"/>
+        <SolidColorBrush x:Key="BgSidebar" Color="#1C1C1C"/>
+        <SolidColorBrush x:Key="BgCard" Color="#1A1A1A"/>
+        <SolidColorBrush x:Key="BgStageInner" Color="#141414"/>
+        <SolidColorBrush x:Key="BgPill" Color="#232323"/>
+        <SolidColorBrush x:Key="BgPillHover" Color="#2D2D2D"/>
+        <SolidColorBrush x:Key="BgInput" Color="#141414"/>
+        <SolidColorBrush x:Key="BorderSubtle" Color="#282828"/>
+        <SolidColorBrush x:Key="BorderStrong" Color="#383838"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#B0B0B0"/>
+        <SolidColorBrush x:Key="TextMuted" Color="#7E7E7E"/>
+        <SolidColorBrush x:Key="NavActiveBg" Color="#3A371C"/>
+        <SolidColorBrush x:Key="NavActiveFg" Color="#FDE047"/>
+        <SolidColorBrush x:Key="AccentYellow" Color="#FACC15"/>
+        <SolidColorBrush x:Key="AccentYellowHover" Color="#FDE047"/>
+        <SolidColorBrush x:Key="AccentYellowFg" Color="#111111"/>
+        <SolidColorBrush x:Key="BadgeBg" Color="#2A2A2A"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#EF4444"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#22C55E"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#F59E0B"/>
+        <SolidColorBrush x:Key="GlassTint" Color="#CC101114"/>
+        <SolidColorBrush x:Key="GlassTileBg" Color="#EB1E1F23"/>
+        <SolidColorBrush x:Key="GlassTileHoverBg" Color="#F52A2C32"/>
+
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+            <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+        </Style>
+
+        <!-- Luxury Slim Glass ScrollBar for Overflow Shortcuts -->
+        <Style x:Key="QuickGlassScrollBar" TargetType="{x:Type ScrollBar}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid Background="Transparent" Margin="2,4,0,4">
+                            <Border Background="{DynamicResource BorderSubtle}" Opacity="0.35" CornerRadius="4"/>
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" IsTabStop="False"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" IsTabStop="False"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Cursor="Hand">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Border x:Name="ThumbBd"
+                                                        Background="{DynamicResource AccentYellow}"
+                                                        Opacity="0.68"
+                                                        CornerRadius="4"
+                                                        Margin="0,1"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ThumbBd" Property="Opacity" Value="1"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="QuickScrollViewer" TargetType="{x:Type ScrollViewer}">
+            <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ScrollContentPresenter Grid.Column="0"
+                                                    CanContentScroll="{TemplateBinding CanContentScroll}"/>
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                                       Grid.Column="1"
+                                       Style="{StaticResource QuickGlassScrollBar}"
+                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                       Maximum="{TemplateBinding ScrollableHeight}"
+                                       ViewportSize="{TemplateBinding ViewportHeight}"
+                                       Value="{TemplateBinding VerticalOffset}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Quick Pill Button -->
+        <Style x:Key="QuickPillBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource BgPill}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPillHover}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource AccentYellow}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dedicated Top-Left Frosted Glass Info Button -->
+        <Style x:Key="GlassInfoBtn" TargetType="Button">
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="{DynamicResource GlassTileBg}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="14" ShadowDepth="4" Opacity="0.28"/>
+                            </Border.Effect>
+                            <TextBlock Text="i"
+                                       FontFamily="Georgia, Segoe UI"
+                                       FontStyle="Italic"
+                                       FontWeight="Bold"
+                                       FontSize="20"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,0,1"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource GlassTileHoverBg}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource AccentYellow}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentYellow}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.93" ScaleY="0.93"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dedicated Top-Right Frosted Glass Close Button -->
+        <Style x:Key="GlassCloseBtn" TargetType="Button">
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="{DynamicResource GlassTileBg}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="14" ShadowDepth="4" Opacity="0.28"/>
+                            </Border.Effect>
+                            <Path Data="M4,4 L14,14 M14,4 L4,14"
+                                  Width="18" Height="18"
+                                  Stroke="{TemplateBinding Foreground}"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource GlassTileHoverBg}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource AccentYellow}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentYellow}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.93" ScaleY="0.93"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ClassicCloseBtn" TargetType="Button">
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="9">
+                            <Path Data="M4,4 L13,13 M13,4 L4,13"
+                                  Width="16" Height="16"
+                                  Stroke="{TemplateBinding Foreground}"
+                                  StrokeThickness="1.8"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPillHover}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource DangerColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="RootViewport">
+        <!-- ===============================================================
+             MODE 1: FULLSCREEN FROSTED-GLASS SQUARE GRID (Kare Izgara Modu)
+             =============================================================== -->
+        <Grid x:Name="SquareModeRoot" Visibility="Collapsed" ClipToBounds="True">
+            <!-- Captured Desktop Blurred Layer -->
+            <Image x:Name="BackdropShotImage"
+                   Stretch="Fill"
+                   Margin="-28"
+                   RenderOptions.BitmapScalingMode="LowQuality">
+                <Image.Effect>
+                    <BlurEffect Radius="36" KernelType="Gaussian" RenderingBias="Performance"/>
+                </Image.Effect>
+            </Image>
+
+            <!-- Theme-Tinted Frosted Glass Veil (Click Outside Squares to Close) -->
+            <Border x:Name="GlassOverlayLayer"
+                    Background="{DynamicResource GlassTint}"
+                    MouseLeftButtonDown="GlassBackdrop_MouseLeftButtonDown"/>
+
+            <!-- Subtle Ambient Vignette Frame (Non-Hit-Test) -->
+            <Border IsHitTestVisible="False"
+                    BorderBrush="{DynamicResource BorderStrong}"
+                    BorderThickness="0"
+                    Opacity="0.4"/>
+
+            <!-- Top-Left Dedicated Info Button (Symmetrical with Close) -->
+            <Button x:Name="SquareInfoBtn"
+                    Style="{StaticResource GlassInfoBtn}"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="32,28,0,0"
+                    Focusable="False"
+                    MouseEnter="SquareInfoBtn_MouseEnter"
+                    MouseLeave="SquareInfoBtn_MouseLeave"
+                    Click="SquareInfoBtn_Click"/>
+
+            <!-- Floating Non-Focus-Stealing Info Panel -->
+            <Border x:Name="SquareInfoPopup"
+                    Visibility="Collapsed"
+                    IsHitTestVisible="False"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="32,82,0,0"
+                    Width="296"
+                    CornerRadius="14"
+                    Background="{DynamicResource GlassTileHoverBg}"
+                    BorderBrush="{DynamicResource BorderStrong}"
+                    BorderThickness="1"
+                    Padding="16,14">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="6" Opacity="0.34" RenderingBias="Performance"/>
+                </Border.Effect>
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,10">
+                        <Border DockPanel.Dock="Right" Background="{DynamicResource BgPill}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="7" Padding="8,3">
+                            <TextBlock x:Name="SquareListenerText"
+                                       Text="Dinleyici Hazır"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource SuccessColor}"/>
+                        </Border>
+                        <TextBlock Text="Hızlı Kısayol İpuçları" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+                    </DockPanel>
+                    <TextBlock Text="1–9 • İlk 9 öğeyi tek tuşla anında açar" FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Ok Tuşları + Enter • Seçim ve başlatma" FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                    <TextBlock Text="F1 • Ana yönetim / düzenleme ekranına geçer" FontSize="12" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Esc veya Boş Alan • Hızlı seçimi kapatır" FontSize="12" Foreground="{DynamicResource TextSecondary}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Top-Right Dedicated Close Button (No Native Tooltip) -->
+            <Button x:Name="SquareCloseBtn"
+                    Style="{StaticResource GlassCloseBtn}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,28,32,0"
+                    Focusable="False"
+                    Click="CloseOverlay_Click"/>
+
+            <!-- Centered Pure Square Matrix -->
+            <Grid x:Name="SquareCenterContainer"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <ScaleTransform x:Name="SquareEntranceScale" ScaleX="1" ScaleY="1"/>
+                </Grid.RenderTransform>
+
+                <ScrollViewer x:Name="SquareScrollViewer"
+                              Style="{StaticResource QuickScrollViewer}"
+                              MaxHeight="520"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              PanningMode="VerticalOnly"
+                              ScrollChanged="SquareScrollViewer_ScrollChanged">
+                    <UniformGrid x:Name="SquareTilesGrid"
+                                 Columns="3"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 Margin="10,10,16,10"/>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- Branching Hover Flyout (Right-Side Normal / Yönetici Cards + Curved Arrows) -->
+            <Canvas x:Name="DualFlyoutCanvas">
+                <Grid x:Name="DualFlyoutRoot"
+                      Width="226"
+                      Height="132"
+                      Visibility="Collapsed"
+                      MouseEnter="DualFlyoutRoot_MouseEnter"
+                      MouseLeave="DualFlyoutRoot_MouseLeave">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="54"/>
+                        <ColumnDefinition Width="172"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Branching Curved Arrows Bridge (Hit-Test Enabled so cursor never drops) -->
+                    <Canvas Grid.Column="0"
+                            Width="54"
+                            Height="132"
+                            Background="#01000000"
+                            RenderTransformOrigin="0,0.5">
+                        <Canvas.RenderTransform>
+                            <ScaleTransform x:Name="FlyoutArrowsScale" ScaleX="1" ScaleY="1"/>
+                        </Canvas.RenderTransform>
+                        <Ellipse Width="8" Height="8" Canvas.Left="0" Canvas.Top="62" Fill="{DynamicResource AccentYellow}"/>
+                        <!-- Upper Branch Arrow -->
+                        <Path Data="M 4,66 C 22,66 24,30 46,30"
+                              Stroke="{DynamicResource AccentYellow}"
+                              StrokeThickness="2.2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"/>
+                        <Path Data="M 39,24 L 48,30 L 39,36"
+                              Stroke="{DynamicResource AccentYellow}"
+                              StrokeThickness="2.2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round"/>
+                        <!-- Lower Branch Arrow -->
+                        <Path Data="M 4,66 C 22,66 24,102 46,102"
+                              Stroke="{DynamicResource AccentYellow}"
+                              StrokeThickness="2.2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"/>
+                        <Path Data="M 39,96 L 48,102 L 39,108"
+                              Stroke="{DynamicResource AccentYellow}"
+                              StrokeThickness="2.2"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              StrokeLineJoin="Round"/>
+                    </Canvas>
+
+                    <!-- Stacked Floating Option Boxes (Normal Aç / Yönetici Olarak) -->
+                    <Grid Grid.Column="1" Background="#01000000">
+                        <Border x:Name="FlyoutNormalBox"
+                                Height="52"
+                                VerticalAlignment="Top"
+                                Margin="0,4,0,0"
+                                CornerRadius="14"
+                                Background="{DynamicResource GlassTileBg}"
+                                BorderBrush="{DynamicResource BorderStrong}"
+                                BorderThickness="1.5"
+                                Cursor="Hand"
+                                Padding="12,0"
+                                RenderTransformOrigin="0,0.5">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="4" Opacity="0.32" RenderingBias="Performance"/>
+                            </Border.Effect>
+                            <Border.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="FlyoutNormalScale" ScaleX="1" ScaleY="1"/>
+                                    <TranslateTransform x:Name="FlyoutNormalTranslate" X="0" Y="0"/>
+                                </TransformGroup>
+                            </Border.RenderTransform>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Width="28" Height="28" CornerRadius="8" Background="{DynamicResource BgPill}" Margin="0,0,10,0">
+                                    <Path Data="M 9,7 L 19,14 L 9,21 Z" Width="28" Height="28" Fill="{DynamicResource TextPrimary}"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Normal Aç" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                    <TextBlock Text="Standart yetki" FontSize="11" Foreground="{DynamicResource TextMuted}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border x:Name="FlyoutAdminBox"
+                                Height="52"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,0,4"
+                                CornerRadius="14"
+                                Background="{DynamicResource GlassTileHoverBg}"
+                                BorderBrush="{DynamicResource AccentYellow}"
+                                BorderThickness="1.5"
+                                Cursor="Hand"
+                                Padding="12,0"
+                                RenderTransformOrigin="0,0.5">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="4" Opacity="0.36" RenderingBias="Performance"/>
+                            </Border.Effect>
+                            <Border.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="FlyoutAdminScale" ScaleX="1" ScaleY="1"/>
+                                    <TranslateTransform x:Name="FlyoutAdminTranslate" X="0" Y="0"/>
+                                </TransformGroup>
+                            </Border.RenderTransform>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Width="28" Height="28" CornerRadius="8" Background="{DynamicResource NavActiveBg}" Margin="0,0,10,0">
+                                    <Path Data="M 15,4 L 8,15 L 14,15 L 12,24 L 20,12 L 14,12 Z" Width="28" Height="28" Fill="{DynamicResource AccentYellow}"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Yönetici Olarak" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                    <TextBlock Text="Tam sistem yetkisi" FontSize="11" Foreground="{DynamicResource TextSecondary}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Canvas>
+
+        </Grid>
+
+        <!-- ===============================================================
+             MODE 2: CLASSIC MINI OVAL CARD (Klasik Mini Mod)
+             =============================================================== -->
+        <Grid x:Name="ClassicModeRoot"
+              Visibility="Collapsed"
+              Width="652"
+              Height="452"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <ScaleTransform x:Name="ClassicEntranceScale" ScaleX="1" ScaleY="1"/>
+            </Grid.RenderTransform>
+            <Border Margin="16"
+                    Background="{DynamicResource BgCard}"
+                    CornerRadius="20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="26" ShadowDepth="8" Opacity="0.52"/>
+                </Border.Effect>
+            </Border>
+
+            <Border Margin="16"
+                    Background="{DynamicResource BgMain}"
+                    BorderBrush="{DynamicResource BorderStrong}"
+                    BorderThickness="1"
+                    CornerRadius="20"
+                    ClipToBounds="True">
+                <Grid x:Name="ClassicClipGrid" SizeChanged="ClassicClipGrid_SizeChanged">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="64"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Search Header -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource BgSidebar}"
+                            BorderBrush="{DynamicResource BorderSubtle}"
+                            BorderThickness="0,0,0,1"
+                            Padding="16,10"
+                            MouseLeftButtonDown="ClassicHeader_MouseLeftButtonDown">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" VerticalAlignment="Center">
+                                <TextBox x:Name="ClassicSearchBox"
+                                         Background="{DynamicResource BgInput}"
+                                         Foreground="{DynamicResource TextPrimary}"
+                                         CaretBrush="{DynamicResource AccentYellow}"
+                                         BorderBrush="{DynamicResource BorderStrong}"
+                                         BorderThickness="1"
+                                         FontSize="14"
+                                         Padding="12,8"
+                                         TextChanged="ClassicSearchBox_TextChanged">
+                                    <TextBox.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="10"/>
+                                        </Style>
+                                    </TextBox.Resources>
+                                </TextBox>
+                                <TextBlock x:Name="ClassicSearchHint"
+                                           Text="Uygulama, web sitesi veya dosya ara..."
+                                           Foreground="{DynamicResource TextMuted}"
+                                           FontSize="13"
+                                           Margin="14,0,0,0"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"/>
+                            </Grid>
+
+                            <Button Grid.Column="1"
+                                    Content="Düzenle (F1)"
+                                    Style="{StaticResource QuickPillBtn}"
+                                    Focusable="False"
+                                    Margin="10,0,6,0"
+                                    Click="OpenEditor_Click"/>
+
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource ClassicCloseBtn}"
+                                    Focusable="False"
+                                    Click="CloseOverlay_Click"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 2-Column Compact Cards -->
+                    <ScrollViewer Grid.Row="1"
+                                  Style="{StaticResource QuickScrollViewer}"
+                                  VerticalScrollBarVisibility="Auto"
+                                  Padding="14,12">
+                        <UniformGrid x:Name="ClassicCardsGrid" Columns="2" VerticalAlignment="Top"/>
+                    </ScrollViewer>
+
+                    <!-- Footer Hints -->
+                    <Border Grid.Row="2"
+                            Background="{DynamicResource BgSidebar}"
+                            BorderBrush="{DynamicResource BorderSubtle}"
+                            BorderThickness="0,1,0,0"
+                            Padding="16,0">
+                        <Grid VerticalAlignment="Center">
+                            <TextBlock Text="1-9 Hızlı Aç  •  ↑↓ Gezin  •  Enter Başlat  •  F1 Düzenle  •  Esc Gizle"
+                                       Foreground="{DynamicResource TextMuted}"
+                                       FontSize="12"
+                                       HorizontalAlignment="Left"/>
+                            <TextBlock x:Name="ClassicStatusText"
+                                       Text="Dinleyici Aktif"
+                                       Foreground="{DynamicResource SuccessColor}"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

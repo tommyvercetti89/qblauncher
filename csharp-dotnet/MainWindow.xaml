@@ -1,0 +1,1448 @@
+<Window x:Class="QBLauncherPro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="QBLauncher Pro"
+        Width="1100"
+        Height="650"
+        MinWidth="420"
+        MinHeight="300"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="{StaticResource AppFont}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        RenderOptions.ClearTypeHint="Enabled"
+        RenderOptions.BitmapScalingMode="HighQuality"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Window.Resources>
+        <!-- Filee Dark Theme Brushes (Siyaha Dönük Gri) -->
+        <SolidColorBrush x:Key="BgMain" Color="#121212"/>
+        <SolidColorBrush x:Key="BgSidebar" Color="#1C1C1C"/>
+        <SolidColorBrush x:Key="BgCard" Color="#1A1A1A"/>
+        <SolidColorBrush x:Key="BgStageInner" Color="#141414"/>
+        <SolidColorBrush x:Key="BgPill" Color="#232323"/>
+        <SolidColorBrush x:Key="BgPillHover" Color="#2D2D2D"/>
+        <SolidColorBrush x:Key="BgInput" Color="#141414"/>
+        <SolidColorBrush x:Key="BorderSubtle" Color="#282828"/>
+        <SolidColorBrush x:Key="BorderStrong" Color="#383838"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#B0B0B0"/>
+        <SolidColorBrush x:Key="TextMuted" Color="#7E7E7E"/>
+        <SolidColorBrush x:Key="NavActiveBg" Color="#3A371C"/>
+        <SolidColorBrush x:Key="NavActiveFg" Color="#FDE047"/>
+        <SolidColorBrush x:Key="AccentYellow" Color="#FACC15"/>
+        <SolidColorBrush x:Key="AccentYellowHover" Color="#FDE047"/>
+        <SolidColorBrush x:Key="AccentYellowFg" Color="#111111"/>
+        <SolidColorBrush x:Key="BadgeBg" Color="#2A2A2A"/>
+        <SolidColorBrush x:Key="DangerColor" Color="#EF4444"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#22C55E"/>
+        <SolidColorBrush x:Key="WarningColor" Color="#F59E0B"/>
+        <SolidColorBrush x:Key="GlassTint" Color="#CC101114"/>
+        <SolidColorBrush x:Key="GlassTileBg" Color="#EB1E1F23"/>
+        <SolidColorBrush x:Key="GlassTileHoverBg" Color="#F52A2C32"/>
+
+        <!-- Crisp ClearType & Layout Rounding Defaults -->
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+            <Setter Property="TextOptions.TextHintingMode" Value="Fixed"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+        </Style>
+
+        <Style TargetType="{x:Type ScrollViewer}">
+            <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+        <!-- Pill Secondary Button -->
+        <Style x:Key="PillBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource BgPill}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPillHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Yellow Primary Pill Button -->
+        <Style x:Key="YellowPillBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource AccentYellow}"/>
+            <Setter Property="Foreground" Value="{DynamicResource AccentYellowFg}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="16,7"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource AccentYellowHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Symmetrical Segmented Pill Switch Button -->
+        <Style x:Key="SegPillBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="9" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Custom Modern Scrollbar Style (Thin Rounded Pill, No Legacy Arrows) -->
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Width" Value="7"/>
+            <Setter Property="MinWidth" Value="7"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid Background="Transparent" Margin="1,4">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0" IsHitTestVisible="False"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Cursor="Hand">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                                <Border x:Name="thumbBd" Background="#48FFFFFF" CornerRadius="3" Width="5" HorizontalAlignment="Center"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="thumbBd" Property="Background" Value="{DynamicResource AccentYellow}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0" IsHitTestVisible="False"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Sidebar Navigation Button -->
+        <Style x:Key="NavBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPill}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Window Icon Button -->
+        <Style x:Key="WinIconBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPill}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Large Input Box -->
+        <Style x:Key="LargeInput" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource BgInput}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource AccentYellow}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+            <Setter Property="RenderOptions.ClearTypeHint" Value="Enabled"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="4,0" VerticalAlignment="Center" RenderOptions.ClearTypeHint="Enabled"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource AccentYellow}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Filee Yellow Switch -->
+        <Style x:Key="YellowSwitch" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border x:Name="track" Width="46" Height="26" CornerRadius="13" Background="{DynamicResource BgPill}" BorderBrush="{DynamicResource BorderStrong}" BorderThickness="1">
+                            <Ellipse x:Name="thumb" Width="18" Height="18" HorizontalAlignment="Left" Margin="3,0,0,0" Fill="{DynamicResource TextSecondary}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="track" Property="Background" Value="{DynamicResource AccentYellow}"/>
+                                <Setter TargetName="track" Property="BorderBrush" Value="{DynamicResource AccentYellow}"/>
+                                <Setter TargetName="thumb" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter TargetName="thumb" Property="Margin" Value="0,0,3,0"/>
+                                <Setter TargetName="thumb" Property="Fill" Value="{DynamicResource AccentYellowFg}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Themed ComboBox Item -->
+        <Style x:Key="ModernComboBoxItem" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="bd"
+                                Background="Transparent"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}"
+                                Margin="0,1">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPillHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPillHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource NavActiveBg}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource NavActiveFg}"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Themed ComboBox -->
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid x:Name="templateRoot" SnapsToDevicePixels="True">
+                            <ToggleButton x:Name="toggleButton"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press"
+                                          Focusable="False"
+                                          Cursor="Hand"
+                                          Background="{DynamicResource BgInput}"
+                                          BorderBrush="{DynamicResource BorderStrong}"
+                                          BorderThickness="1">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="bd"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="34"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Path Grid.Column="1"
+                                                      Data="M 4,7 L 9,12 L 14,7"
+                                                      Width="18" Height="18"
+                                                      Stroke="{DynamicResource TextSecondary}"
+                                                      StrokeThickness="1.8"
+                                                      StrokeStartLineCap="Round"
+                                                      StrokeEndLineCap="Round"
+                                                      StrokeLineJoin="Round"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="bd" Property="Background" Value="{DynamicResource BgPill}"/>
+                                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource AccentYellow}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource AccentYellow}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <ContentPresenter x:Name="contentPresenter"
+                                              IsHitTestVisible="False"
+                                              Margin="12,0,34,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              TextElement.Foreground="{DynamicResource TextPrimary}"/>
+
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Placement="Bottom"
+                                   PopupAnimation="Fade"
+                                   Focusable="False">
+                                <Border x:Name="dropDownBorder"
+                                        MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        MaxHeight="240"
+                                        Margin="0,4,0,0"
+                                        Padding="5"
+                                        CornerRadius="12"
+                                        Background="{DynamicResource BgCard}"
+                                        BorderBrush="{DynamicResource BorderStrong}"
+                                        BorderThickness="1.25">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="OuterMarginGrid" Margin="10">
+        <!-- Shadow Layer (Active in both Main and Mini Oval Modes) -->
+        <Border x:Name="ShadowLayer" Background="{DynamicResource BgMain}" CornerRadius="18" Visibility="Visible">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="24" ShadowDepth="6" Opacity="0.58" Color="#000000"/>
+            </Border.Effect>
+        </Border>
+
+        <!-- Main Shell -->
+        <Border x:Name="RootShell"
+                Background="{DynamicResource BgMain}"
+                BorderBrush="{DynamicResource BorderStrong}"
+                BorderThickness="1"
+                CornerRadius="18"
+                RenderOptions.ClearTypeHint="Enabled"
+                RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <ScaleTransform x:Name="ShellScale" ScaleX="1" ScaleY="1"/>
+            </Border.RenderTransform>
+
+            <Grid x:Name="InnerClipGrid" SizeChanged="InnerClipGrid_SizeChanged" RenderOptions.ClearTypeHint="Enabled">
+                <!-- ========================================================= -->
+                <!-- 1. MAIN FILEE-STYLE WORKSPACE                             -->
+                <!-- ========================================================= -->
+                <Grid x:Name="MainView" RenderOptions.ClearTypeHint="Enabled">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="215"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Sidebar -->
+                    <Border Grid.Column="0" Background="{DynamicResource BgSidebar}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="0,0,1,0" Padding="14,26,14,16" RenderOptions.ClearTypeHint="Enabled">
+                        <DockPanel LastChildFill="True">
+                            <!-- Brand Block -->
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4,4,4,20" Background="Transparent" MouseLeftButtonDown="DragWindow_MouseDown">
+                                <Border Width="40" Height="40" CornerRadius="11" Background="#1A1B20" BorderBrush="{DynamicResource BorderStrong}" BorderThickness="1" Padding="4" Margin="0,0,10,0">
+                                    <Image Source="pack://application:,,,/Assets/Icons/brand.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="QBLauncher Pro" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                    <TextBlock Text="Hızlı seç, anında aç." FontSize="13" Foreground="{DynamicResource TextMuted}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Sidebar Footer -->
+                            <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                                <Border Height="1" Background="{DynamicResource BorderSubtle}" Margin="0,0,0,10"/>
+                                <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="11" Padding="11,9" Margin="0,0,0,9">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse x:Name="SidebarStatusDot" Width="9" Height="9" Fill="{DynamicResource WarningColor}" VerticalAlignment="Center" Margin="0,0,9,0"/>
+                                        <StackPanel>
+                                            <TextBlock x:Name="SidebarStatusTitle" Text="Onay Bekleniyor" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock x:Name="SidebarHotkeyLabel" Text="Alt + Space" FontFamily="{StaticResource MonoFont}" FontSize="12" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.3*"/>
+                                        <ColumnDefinition Width="7"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Style="{StaticResource PillBtn}" Padding="6,7" FontSize="13" Click="SwitchToMini_Click" Content="⚡ Mini Ekran"/>
+                                    <Button Grid.Column="2" Style="{StaticResource PillBtn}" Padding="6,7" FontSize="13" Click="HideToBackground_Click" Content="Gizle"/>
+                                </Grid>
+
+                                <TextBlock Text="Sürüm 1.0.0" FontSize="13" Foreground="{DynamicResource TextMuted}" Margin="4,0,0,0"/>
+                            </StackPanel>
+
+                            <!-- Navigation Items -->
+                            <StackPanel VerticalAlignment="Top">
+                                <Button x:Name="NavHome" Style="{StaticResource NavBtn}" Tag="home" Click="NavTab_Click" Margin="0,0,0,4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="pack://application:,,,/Assets/Icons/nav_home.png" Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Ana sayfa" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="NavGeneral" Style="{StaticResource NavBtn}" Tag="general" Click="NavTab_Click" Margin="0,0,0,4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="pack://application:,,,/Assets/Icons/nav_general.png" Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Genel" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="NavHotkeys" Style="{StaticResource NavBtn}" Tag="hotkeys" Click="NavTab_Click" Margin="0,0,0,4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="pack://application:,,,/Assets/Icons/nav_hotkeys.png" Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Kısayollar" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="NavPicker" Style="{StaticResource NavBtn}" Tag="picker" Click="NavTab_Click" Margin="0,0,0,4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="pack://application:,,,/Assets/Icons/nav_picker.png" Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Seçme ekranı" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="NavPresets" Style="{StaticResource NavBtn}" Tag="presets" Click="NavTab_Click" Margin="0,0,0,4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="pack://application:,,,/Assets/Icons/nav_presets.png" Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Ön ayarlar" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="NavTheme" Style="{StaticResource NavBtn}" Tag="theme" Click="NavTab_Click" Margin="0,0,0,4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="pack://application:,,,/Assets/Icons/nav_theme.png" Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Tema" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="NavAbout" Style="{StaticResource NavBtn}" Tag="about" Click="NavTab_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="pack://application:,,,/Assets/Icons/nav_about.png" Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Hakkında" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Main Workspace -->
+                    <DockPanel Grid.Column="1" LastChildFill="True">
+                        <!-- Top Drag Bar (Pinned Right Controls via 3-Column Grid) -->
+                        <Border DockPanel.Dock="Top" Height="58" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="0,0,0,1" Padding="26,12,18,4" Background="Transparent" MouseLeftButtonDown="TopBar_MouseLeftButtonDown">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="QBLauncher Pro" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
+                                    <Border Background="{DynamicResource BgPill}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="8" Padding="10,3" Margin="12,0,0,0">
+                                        <TextBlock x:Name="TopHotkeyPill" Text="Alt + Space • Beklemede" FontFamily="{StaticResource MonoFont}" FontSize="13" Foreground="{DynamicResource TextSecondary}"/>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                    <Button Style="{StaticResource PillBtn}" Padding="12,5" FontSize="13" Content="Arka Plana Gizle" Click="HideToBackground_Click" ToolTip="Pencereyi gizle ve arka planda dinlemeye devam et" Margin="0,0,8,0"/>
+                                    <Button Style="{StaticResource WinIconBtn}" Click="QuickTheme_Click" ToolTip="Temayı Değiştir" Margin="0,0,4,0">
+                                        <Path Data="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.9" Width="16" Height="16" Stretch="Uniform"/>
+                                    </Button>
+                                    <Button Style="{StaticResource WinIconBtn}" Click="Minimize_Click" ToolTip="Küçült" Margin="0,0,4,0">
+                                        <Path Data="M5 12H19" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.9" Width="15" Height="15" Stretch="Uniform"/>
+                                    </Button>
+                                    <Button Style="{StaticResource WinIconBtn}" Click="ToggleMaximize_Click" ToolTip="Büyüt / Tam Ekran" Margin="0,0,4,0">
+                                        <Path Data="M5 5H19V19H5V5Z" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.9" Width="14" Height="14" Stretch="Uniform"/>
+                                    </Button>
+                                    <Button Style="{StaticResource WinIconBtn}" Click="Quit_Click" ToolTip="Uygulamayı Tamamen Kapat">
+                                        <Path Data="M18 6L6 18M6 6L18 18" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.9" Width="15" Height="15" Stretch="Uniform"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Consent Banner -->
+                        <Border x:Name="ConsentBanner" DockPanel.Dock="Top" Margin="22,12,22,0" Padding="15,11" CornerRadius="14" Background="{DynamicResource NavActiveBg}" BorderBrush="{DynamicResource AccentYellow}" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="{DynamicResource AccentYellow}" CornerRadius="8" Padding="10,4" Margin="0,0,12,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Onay Gerekli" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource AccentYellowFg}"/>
+                                </Border>
+                                <TextBlock x:Name="ConsentBannerDesc" Grid.Column="1" Text="Uygulama siz kapatana kadar kısayol tuşunu süresiz dinlesin ve Mini Seçme Ekranını açsın mı?" FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <Button Grid.Column="2" Style="{StaticResource YellowPillBtn}" Content="Onayla ve Dinlemeyi Başlat" Click="ApproveBanner_Click" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Single Fill Container so EVERY Tab stretches 100% width and height -->
+                        <Grid>
+                        <!-- TAB: SEÇME EKRANI (Filee 3-Column Visual Editor) -->
+                        <Grid x:Name="TabPicker" Margin="26,26,26,22">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Seçme ekranı" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,14"/>
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="210"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="308"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- COL 1: 1. Profil seçin -->
+                                <DockPanel Grid.Column="0" LastChildFill="True">
+                                    <TextBlock DockPanel.Dock="Top" Text="1. Profil seçin" FontSize="15" FontWeight="Medium" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,10"/>
+                                    <TextBox x:Name="ProfileSearchBox" DockPanel.Dock="Top" Style="{StaticResource LargeInput}" TextChanged="ProfileSearch_TextChanged" Margin="0,0,0,12" ToolTip="Profil ara"/>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <StackPanel x:Name="ProfileListStack"/>
+                                    </ScrollViewer>
+                                </DockPanel>
+
+                                <!-- COL 2: 2. Mini seçme ekranını düzenleyin -->
+                                <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel>
+                                        <TextBlock Text="2. Mini seçme ekranını düzenleyin" FontSize="15" FontWeight="Medium" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,10"/>
+
+                                        <!-- Center Stage Card -->
+                                        <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="18" Padding="18,16" Margin="0,0,0,14">
+                                            <StackPanel>
+                                                <Border Background="{DynamicResource BgPill}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="12" Padding="3" HorizontalAlignment="Center" Margin="0,0,0,10">
+                                                    <UniformGrid Columns="2" Width="330" Height="32">
+                                                        <Button x:Name="SegSquareModeBtn" Style="{StaticResource SegPillBtn}" Tag="square" Click="SelectLauncherStyle_Click" Content="Kare Izgara Modu"/>
+                                                        <Button x:Name="SegClassicModeBtn" Style="{StaticResource SegPillBtn}" Tag="classic" Click="SelectLauncherStyle_Click" Content="Klasik Mini Mod"/>
+                                                    </UniformGrid>
+                                                </Border>
+
+                                                <TextBlock x:Name="StageCaptionText" Text="Buğulu cam üzerinde kare ızgara • Düzenlemek için kutuya tıklayın" FontSize="13" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+
+                                                <Border Background="{DynamicResource BgStageInner}" BorderBrush="{DynamicResource BorderStrong}" BorderThickness="1" CornerRadius="18" Padding="14" Margin="0,0,0,14">
+                                                    <UniformGrid x:Name="StagePreviewGrid" Columns="3"/>
+                                                </Border>
+
+                                                <Button Style="{StaticResource PillBtn}" HorizontalAlignment="Center" Padding="20,8" Click="SwitchToMini_Click">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse Width="9" Height="9" Fill="{DynamicResource AccentYellow}" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Canlı Test Et — Seçme Ekranını Aç"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Inline Item Editor Card -->
+                                        <Border x:Name="InlineEditorCard" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="18,15">
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,12">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock x:Name="InlineEditorTitle" Grid.Column="0" Text="Seçili Öğe Ayarları" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                        <Button Style="{StaticResource PillBtn}" Padding="12,5" FontSize="13" Content="Çalıştır" Click="InlineTest_Click" Margin="0,0,5,0"/>
+                                                        <Button Style="{StaticResource PillBtn}" Padding="10,5" FontSize="13" Content="↑" Click="InlineUp_Click" Margin="0,0,5,0"/>
+                                                        <Button Style="{StaticResource PillBtn}" Padding="10,5" FontSize="13" Content="↓" Click="InlineDown_Click" Margin="0,0,5,0"/>
+                                                        <Button Style="{StaticResource PillBtn}" Padding="12,5" FontSize="13" Foreground="{DynamicResource DangerColor}" Content="Kaldır" Click="InlineDelete_Click"/>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="10"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="Ad" FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                                                        <TextBox x:Name="EdName" Style="{StaticResource LargeInput}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Grid.Column="2">
+                                                        <TextBlock Text="Alt Başlık" FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                                                        <TextBox x:Name="EdSubtitle" Style="{StaticResource LargeInput}"/>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <TextBlock Text="Hedef Yol, Komut veya Web Adresi" FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                                                <TextBox x:Name="EdTarget" Style="{StaticResource LargeInput}" Margin="0,0,0,10"/>
+                                                <UniformGrid Columns="3" Height="36">
+                                                    <Button Style="{StaticResource PillBtn}" Padding="8,0" FontSize="13" Content="Dosya Seç" Click="InlinePickFile_Click" Margin="0,0,6,0"/>
+                                                    <Button Style="{StaticResource PillBtn}" Padding="8,0" FontSize="13" Content="Klasör Seç" Click="InlinePickFolder_Click" Margin="0,0,6,0"/>
+                                                    <Button Style="{StaticResource YellowPillBtn}" Padding="8,0" FontSize="13" Content="Kaydet" Click="InlineSave_Click"/>
+                                                </UniformGrid>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </ScrollViewer>
+
+                                <!-- COL 3: Kullanılabilir ön ayarlar -->
+                                <DockPanel Grid.Column="4" LastChildFill="True">
+                                    <TextBlock DockPanel.Dock="Top" Text="Kullanılabilir ön ayarlar" FontSize="15" FontWeight="Medium" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,10"/>
+
+                                    <UniformGrid DockPanel.Dock="Top" Columns="3" Height="34" Margin="0,0,0,8">
+                                        <Button Style="{StaticResource PillBtn}" Padding="4,0" FontSize="12" Content="+ Yeni Öğe" Click="OpenAddModal_Click" Margin="0,0,5,0"/>
+                                        <Button Style="{StaticResource PillBtn}" Padding="4,0" FontSize="12" Content="+ Klasör" Click="QuickAddFolder_Click" Margin="0,0,5,0"/>
+                                        <Button Style="{StaticResource PillBtn}" Padding="4,0" FontSize="12" Content="+ Dosya" Click="QuickAddFile_Click"/>
+                                    </UniformGrid>
+
+                                    <TextBox x:Name="PresetSearchBox" DockPanel.Dock="Top" Style="{StaticResource LargeInput}" TextChanged="PresetSearch_TextChanged" Margin="0,0,0,8" ToolTip="Ön ayarlarda ara"/>
+
+                                    <WrapPanel x:Name="PresetChipsPanel" DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                                        <Button Content="Tümü" Tag="all" Click="PresetChip_Click" Style="{StaticResource YellowPillBtn}" Padding="7,4" FontSize="12" Margin="0,0,4,4"/>
+                                        <Button Content="Uygulama" Tag="app" Click="PresetChip_Click" Style="{StaticResource PillBtn}" Padding="7,4" FontSize="12" Margin="0,0,4,4"/>
+                                        <Button Content="Sistem" Tag="system" Click="PresetChip_Click" Style="{StaticResource PillBtn}" Padding="7,4" FontSize="12" Margin="0,0,4,4"/>
+                                        <Button Content="Dosya" Tag="file" Click="PresetChip_Click" Style="{StaticResource PillBtn}" Padding="7,4" FontSize="12" Margin="0,0,4,4"/>
+                                        <Button Content="Web" Tag="web" Click="PresetChip_Click" Style="{StaticResource PillBtn}" Padding="7,4" FontSize="12" Margin="0,0,0,4"/>
+                                    </WrapPanel>
+
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="10">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <StackPanel x:Name="PresetsPoolPanel"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </DockPanel>
+                            </Grid>
+                        </Grid>
+
+                        <!-- TAB: ANA SAYFA -->
+                        <ScrollViewer x:Name="TabHome" Visibility="Collapsed" Margin="26,26,26,22" VerticalScrollBarVisibility="Auto">
+                            <StackPanel HorizontalAlignment="Stretch">
+                                <TextBlock Text="Ana sayfa" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,14"/>
+                                <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="22" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Hızlı Erişim Paneliniz Hazır" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Belirlediğiniz kısayola bastığınızda eklediğiniz uygulamalar, klasörler, web siteleri ve sistem araçları seçtiğiniz buğulu cam kare ızgara veya klasik mini pencere üzerinde anında açılır." FontSize="15" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,16"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource YellowPillBtn}" Content="Mini Seçme Ekranını Aç" Click="SwitchToMini_Click" Margin="0,0,10,0"/>
+                                            <Button Style="{StaticResource PillBtn}" Content="Seçme Ekranını Düzenle" Click="GoToPicker_Click"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="20,18">
+                                        <StackPanel>
+                                            <TextBlock Text="Kayıtlı Öğe" FontSize="14" Foreground="{DynamicResource TextMuted}"/>
+                                            <TextBlock x:Name="HomeItemCount" Text="0" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="2" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="20,18">
+                                        <StackPanel>
+                                            <TextBlock Text="Aktif Kısayol" FontSize="14" Foreground="{DynamicResource TextMuted}"/>
+                                            <TextBlock x:Name="HomeHotkeyLabel" Text="Alt + Space" FontFamily="{StaticResource MonoFont}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="4" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="20,18">
+                                        <StackPanel>
+                                            <TextBlock Text="Dinleyici Durumu" FontSize="14" Foreground="{DynamicResource TextMuted}"/>
+                                            <TextBlock x:Name="HomeListenerState" Text="Beklemede" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- TAB: GENEL -->
+                        <ScrollViewer x:Name="TabGeneral" Visibility="Collapsed" Margin="26,26,26,22" VerticalScrollBarVisibility="Auto">
+                            <StackPanel HorizontalAlignment="Stretch">
+                                <TextBlock Text="Genel" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,14"/>
+                                <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="20" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <DockPanel Margin="0,0,0,14">
+                                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button x:Name="GenStyleSquareBtn" Style="{StaticResource PillBtn}" Tag="square" Click="SelectLauncherStyle_Click" Padding="13,7" FontSize="13" Content="Kare Izgara (Buğulu Cam)" Margin="0,0,8,0"/>
+                                                <Button x:Name="GenStyleClassicBtn" Style="{StaticResource PillBtn}" Tag="classic" Click="SelectLauncherStyle_Click" Padding="13,7" FontSize="13" Content="Klasik Mini Pencere"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,18,0">
+                                                <TextBlock Text="Hızlı Seçme Ekranı Görünümü" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Kısayola basıldığında tam ekran buğulu cam üzerinde kare ızgara veya kompakt mini pencere kullanın." FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </DockPanel>
+                                        <Border Height="1" Background="{DynamicResource BorderSubtle}" Margin="0,0,0,14"/>
+                                        <DockPanel Margin="0,0,0,14">
+                                            <CheckBox x:Name="ChkAutoHide" DockPanel.Dock="Right" Style="{StaticResource YellowSwitch}" Checked="BehaviorToggle_Changed" Unchecked="BehaviorToggle_Changed"/>
+                                            <StackPanel Margin="0,0,18,0">
+                                                <TextBlock Text="Başlatma Sonrası Otomatik Gizle" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Mini seçme ekranından bir öğe açtığınızda pencere otomatik olarak arka plana gizlenir." FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </DockPanel>
+                                        <Border Height="1" Background="{DynamicResource BorderSubtle}" Margin="0,0,0,14"/>
+                                        <DockPanel Margin="0,0,0,14">
+                                            <CheckBox x:Name="ChkQuickNumbers" DockPanel.Dock="Right" Style="{StaticResource YellowSwitch}" Checked="BehaviorToggle_Changed" Unchecked="BehaviorToggle_Changed"/>
+                                            <StackPanel Margin="0,0,18,0">
+                                                <TextBlock Text="Tek Tuşla Hızlı Başlatma (1-9)" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Mini ekran açıkken arama kutusu boşsa 1-9 rakamlarına basarak anında çalıştırın." FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </DockPanel>
+                                        <Border Height="1" Background="{DynamicResource BorderSubtle}" Margin="0,0,0,14"/>
+                                        <DockPanel Margin="0,0,0,14">
+                                            <CheckBox x:Name="ChkAnimations" DockPanel.Dock="Right" Style="{StaticResource YellowSwitch}" Checked="BehaviorToggle_Changed" Unchecked="BehaviorToggle_Changed"/>
+                                            <StackPanel Margin="0,0,18,0">
+                                                <TextBlock Text="Akıcı Açılış Animasyonları" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Mini seçme ekranı çağrıldığında yumuşak ölçeklenme ve saydamlık geçişi uygular." FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </DockPanel>
+                                        <Border Height="1" Background="{DynamicResource BorderSubtle}" Margin="0,0,0,14"/>
+                                        <DockPanel>
+                                            <CheckBox x:Name="ChkRunOnStartup" DockPanel.Dock="Right" Style="{StaticResource YellowSwitch}" Checked="BehaviorToggle_Changed" Unchecked="BehaviorToggle_Changed"/>
+                                            <StackPanel Margin="0,0,18,0">
+                                                <TextBlock Text="Bilgisayar Açıldığında Otomatik Başlat" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Windows oturumu açıldığında QBLauncher Pro arka planda sessizce başlatılır ve kısayolunuzu dinlemeye devam eder." FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="20">
+                                    <StackPanel>
+                                        <TextBlock Text="Taşınabilir Yapı" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,6"/>
+                                        <TextBlock Text="Tüm ayarlarınız uygulamanın hemen yanındaki taşınabilir ayar dosyasında saklanır:" FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                        <Border Background="{DynamicResource BgStageInner}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="10" Padding="14,10">
+                                            <TextBlock x:Name="ConfigPathText" Text="qblauncher-config.json" FontFamily="{StaticResource MonoFont}" FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- TAB: KISAYOLLAR -->
+                        <ScrollViewer x:Name="TabHotkeys" Visibility="Collapsed" Margin="26,26,26,22" VerticalScrollBarVisibility="Auto">
+                            <StackPanel HorizontalAlignment="Stretch">
+                                <TextBlock Text="Kısayollar" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,14"/>
+                                <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="20" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <DockPanel>
+                                            <CheckBox x:Name="ChkListenerConsent" DockPanel.Dock="Right" Style="{StaticResource YellowSwitch}" Checked="ListenerConsent_Changed" Unchecked="ListenerConsent_Changed"/>
+                                            <StackPanel Margin="0,0,18,0">
+                                                <TextBlock Text="Kullanıcı Onayı &amp; Süresiz Dinleme" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Onay verdiğinizde siz uygulamadan tamamen çıkana kadar belirlediğiniz kısayol tuşu arka planda dinlenir." FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </DockPanel>
+                                        <Border Background="{DynamicResource BgStageInner}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="11" Padding="14,11" Margin="0,14,0,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse x:Name="HealthDot" Width="9" Height="9" Fill="{DynamicResource WarningColor}" Margin="0,0,10,0"/>
+                                                <TextBlock x:Name="HealthText" Text="Dinleyici duraklatıldı." FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="20">
+                                    <StackPanel>
+                                        <TextBlock Text="Global Kısayol Kombinasyonu" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                                        <TextBlock Text="Hangi tuşa basıldığında Mini Seçme Ekranı açılsın?" FontSize="14" Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" Margin="0,0,0,14"/>
+                                        <WrapPanel Margin="0,0,0,14">
+                                            <Border x:Name="HotkeyDisplayBorder" MinWidth="200" Height="44" Background="{DynamicResource BgInput}" BorderBrush="{DynamicResource BorderStrong}" BorderThickness="1" CornerRadius="12" Padding="18,0" Margin="0,0,12,8">
+                                                <TextBlock x:Name="HotkeyDisplayText" Text="Alt + Space" FontFamily="{StaticResource MonoFont}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Button x:Name="BtnRecordHotkey" Style="{StaticResource YellowPillBtn}" Content="Yeni Kısayol Kaydet" Click="RecordHotkey_Click" Margin="0,0,0,8"/>
+                                        </WrapPanel>
+                                        <WrapPanel>
+                                            <Button Style="{StaticResource PillBtn}" Content="Alt + Space" Tag="ALT|SPACE|Alt + Space" Click="PresetHotkey_Click" Margin="0,0,8,8"/>
+                                            <Button Style="{StaticResource PillBtn}" Content="Ctrl + Space" Tag="CTRL|SPACE|Ctrl + Space" Click="PresetHotkey_Click" Margin="0,0,8,8"/>
+                                            <Button Style="{StaticResource PillBtn}" Content="Alt + Q" Tag="ALT|Q|Alt + Q" Click="PresetHotkey_Click" Margin="0,0,8,8"/>
+                                            <Button Style="{StaticResource PillBtn}" Content="Ctrl + Shift + Space" Tag="CTRL+SHIFT|SPACE|Ctrl + Shift + Space" Click="PresetHotkey_Click" Margin="0,0,8,8"/>
+                                            <Button Style="{StaticResource PillBtn}" Content="Alt + X" Tag="ALT|X|Alt + X" Click="PresetHotkey_Click" Margin="0,0,0,8"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- TAB: ÖN AYARLAR (Tam Liste + Özet & Hızlı İşlemler) -->
+                        <Grid x:Name="TabPresets" Visibility="Collapsed" Margin="26,26,26,22">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <DockPanel Grid.Row="0" Margin="0,0,0,14">
+                                <Button DockPanel.Dock="Right" Style="{StaticResource YellowPillBtn}" Content="+ Yeni Öğe Ekle" Click="OpenAddModal_Click"/>
+                                <StackPanel>
+                                    <TextBlock Text="Ön ayarlar" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                    <TextBlock Text="Tüm kısayollarınızı sıraya koyun, düzenleyin veya sağdan tek tıkla yeni kısayollar ekleyin." FontSize="13" Foreground="{DynamicResource TextSecondary}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.75*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="1*" MinWidth="280"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left Column: Full Width Item Rows -->
+                                <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel x:Name="FullItemsStack"/>
+                                </ScrollViewer>
+
+                                <!-- Right Column: Panel Summary, Quick Add & Order Tips -->
+                                <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel>
+                                        <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="18" Margin="0,0,0,14">
+                                            <StackPanel>
+                                                <TextBlock Text="Panel Özeti" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,12"/>
+                                                <UniformGrid Columns="2" Margin="-5">
+                                                    <Border Background="{DynamicResource BgStageInner}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="11" Padding="12,10" Margin="5">
+                                                        <StackPanel>
+                                                            <TextBlock Text="Toplam Öğe" FontSize="12" Foreground="{DynamicResource TextMuted}"/>
+                                                            <TextBlock x:Name="PresetsTotalCountText" Text="0" FontSize="19" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,3,0,0"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <Border Background="{DynamicResource BgStageInner}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="11" Padding="12,10" Margin="5">
+                                                        <StackPanel>
+                                                            <TextBlock Text="1-9 Hızlı Tuş" FontSize="12" Foreground="{DynamicResource TextMuted}"/>
+                                                            <TextBlock x:Name="PresetsQuickSlotsText" Text="0 / 9 Aktif" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource AccentYellow}" Margin="0,5,0,0"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <Border Background="{DynamicResource BgStageInner}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="11" Padding="12,10" Margin="5">
+                                                        <StackPanel>
+                                                            <TextBlock Text="Seçme Görünümü" FontSize="12" Foreground="{DynamicResource TextMuted}"/>
+                                                            <TextBlock x:Name="PresetsModeText" Text="Kare Izgara" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,5,0,0"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <Border Background="{DynamicResource BgStageInner}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="11" Padding="12,10" Margin="5">
+                                                        <StackPanel>
+                                                            <TextBlock Text="Genel Kısayol" FontSize="12" Foreground="{DynamicResource TextMuted}"/>
+                                                            <TextBlock x:Name="PresetsHotkeyText" Text="Alt + Space" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,5,0,0" TextTrimming="CharacterEllipsis"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </UniformGrid>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="18" Margin="0,0,0,14">
+                                            <StackPanel>
+                                                <TextBlock Text="Hızlı Kısayol Ekle" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,4"/>
+                                                <TextBlock Text="Sık kullanılan sistem araçlarını veya klasörleri tek tıkla listenize dahil edin." FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource TextMuted}" Margin="0,0,0,12"/>
+                                                <UniformGrid Columns="2" Margin="-4">
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="+ PowerShell" Click="QuickPresetAdd_Click" Tag="PowerShell|Windows Kabuğu|powershell.exe|system|powershell|false"/>
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="+ Komut İstemi" Click="QuickPresetAdd_Click" Tag="Komut İstemi|CMD Terminal|cmd.exe|system|terminal|false"/>
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="+ Görev Yön." Click="QuickPresetAdd_Click" Tag="Görev Yöneticisi|Performans|taskmgr.exe|system|cpu|false"/>
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="+ Kayıt Defteri" Click="QuickPresetAdd_Click" Tag="Kayıt Defteri|Regedit|regedit.exe|system|bolt|false"/>
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="+ Masaüstü" Click="QuickPresetAdd_Click" Tag="Masaüstü|Hızlı Klasör|%USERPROFILE%\Desktop|file|folder|false"/>
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="+ İndirilenler" Click="QuickPresetAdd_Click" Tag="İndirilenler|Hızlı Klasör|%USERPROFILE%\Downloads|file|folder|false"/>
+                                                </UniformGrid>
+                                                <UniformGrid Columns="2" Margin="-4,8,-4,0">
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="Bilgisayardan Dosya..." Click="QuickAddFile_Click"/>
+                                                    <Button Style="{StaticResource PillBtn}" Margin="4" Padding="8,7" FontSize="12" Content="Bilgisayardan Klasör..." Click="QuickAddFolder_Click"/>
+                                                </UniformGrid>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="18">
+                                            <StackPanel>
+                                                <TextBlock Text="Sıralama ve Hızlı Tuş İpucu" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,6"/>
+                                                <TextBlock Text="Listenin ilk 9 sırasındaki öğeler hızlı seçme ekranında otomatik olarak 1–9 sayı tuşlarına atanır. Sol tutamaçtan fareyle sürükleyip bırakarak veya ↑ ve ↓ oklarıyla sırayı anında değiştirebilirsiniz." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Grid>
+
+                        <!-- TAB: TEMA (Unboxed Full-Tab 3x2 Grid with Top-Left Selection Dots) -->
+                        <Grid x:Name="TabTheme" Visibility="Collapsed" Margin="26,26,26,22">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                                <TextBlock Text="Tema" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Text="Göz zevkinize uygun renk paletini seçin; seçim hem ana yönetim ekranına hem hızlı seçme camına anında uygulanır." FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <UniformGrid Grid.Row="1" Columns="3" Rows="2" Margin="-8">
+                                <Button x:Name="ThemeCardDark" Style="{StaticResource PillBtn}" Click="SelectTheme_Click" Tag="dark" Margin="8" Padding="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="ThemeDotDark" Grid.Column="0" Width="20" Height="20" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource TextMuted}" Background="Transparent" VerticalAlignment="Top" Margin="0,2,12,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Obsidyen Gece" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="Siyaha Dönük Gri" FontSize="13" Foreground="{DynamicResource TextMuted}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Border Grid.Row="1" MinHeight="104" CornerRadius="12" Background="#121212" BorderBrush="#383838" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="32*"/>
+                                                    <ColumnDefinition Width="68*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#1C1C1C" BorderBrush="#282828" BorderThickness="0,0,1,0"/>
+                                                <Grid Grid.Column="1" Margin="14">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Width="56" Height="13" CornerRadius="6" Background="#FACC15" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                                                    <Border Grid.Row="1" CornerRadius="8" Background="#1A1A1A" BorderBrush="#2B2B2B" BorderThickness="1"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="ThemeCardLight" Style="{StaticResource PillBtn}" Click="SelectTheme_Click" Tag="light" Margin="8" Padding="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="ThemeDotLight" Grid.Column="0" Width="20" Height="20" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource TextMuted}" Background="Transparent" VerticalAlignment="Top" Margin="0,2,12,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Mermer Beyazı" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="Griye Dönük Beyaz" FontSize="13" Foreground="{DynamicResource TextMuted}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Border Grid.Row="1" MinHeight="104" CornerRadius="12" Background="#F2F3F5" BorderBrush="#C8CAD2" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="32*"/>
+                                                    <ColumnDefinition Width="68*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#EAECEF" BorderBrush="#DFDFE4" BorderThickness="0,0,1,0"/>
+                                                <Grid Grid.Column="1" Margin="14">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Width="56" Height="13" CornerRadius="6" Background="#EAB308" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                                                    <Border Grid.Row="1" CornerRadius="8" Background="#FFFFFF" BorderBrush="#DFDFE4" BorderThickness="1"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="ThemeCardLavender" Style="{StaticResource PillBtn}" Click="SelectTheme_Click" Tag="lavender" Margin="8" Padding="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="ThemeDotLavender" Grid.Column="0" Width="20" Height="20" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource TextMuted}" Background="Transparent" VerticalAlignment="Top" Margin="0,2,12,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Lavanta Moru" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="Canlı Mor ve Lavanta" FontSize="13" Foreground="{DynamicResource TextMuted}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Border Grid.Row="1" MinHeight="104" CornerRadius="12" Background="#231738" BorderBrush="#5E4294" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="32*"/>
+                                                    <ColumnDefinition Width="68*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#191029" BorderBrush="#432E6B" BorderThickness="0,0,1,0"/>
+                                                <Grid Grid.Column="1" Margin="14">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Width="56" Height="13" CornerRadius="6" Background="#A855F7" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                                                    <Border Grid.Row="1" CornerRadius="8" Background="#2E1F4A" BorderBrush="#432E6B" BorderThickness="1"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="ThemeCardMint" Style="{StaticResource PillBtn}" Click="SelectTheme_Click" Tag="mint" Margin="8" Padding="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="ThemeDotMint" Grid.Column="0" Width="20" Height="20" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource TextMuted}" Background="Transparent" VerticalAlignment="Top" Margin="0,2,12,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Yaprak Yeşili" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="Canlı Yaprak Yeşili" FontSize="13" Foreground="{DynamicResource TextMuted}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Border Grid.Row="1" MinHeight="104" CornerRadius="12" Background="#112E1F" BorderBrush="#387A57" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="32*"/>
+                                                    <ColumnDefinition Width="68*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#0B2116" BorderBrush="#26573D" BorderThickness="0,0,1,0"/>
+                                                <Grid Grid.Column="1" Margin="14">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Width="56" Height="13" CornerRadius="6" Background="#10B981" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                                                    <Border Grid.Row="1" CornerRadius="8" Background="#183D2A" BorderBrush="#26573D" BorderThickness="1"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="ThemeCardSky" Style="{StaticResource PillBtn}" Click="SelectTheme_Click" Tag="sky" Margin="8" Padding="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="ThemeDotSky" Grid.Column="0" Width="20" Height="20" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource TextMuted}" Background="Transparent" VerticalAlignment="Top" Margin="0,2,12,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Okyanus Mavisi" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="Derin Okyanus Mavisi" FontSize="13" Foreground="{DynamicResource TextMuted}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Border Grid.Row="1" MinHeight="104" CornerRadius="12" Background="#0F2942" BorderBrush="#34689A" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="32*"/>
+                                                    <ColumnDefinition Width="68*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#0A1E32" BorderBrush="#234B73" BorderThickness="0,0,1,0"/>
+                                                <Grid Grid.Column="1" Margin="14">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Width="56" Height="13" CornerRadius="6" Background="#0EA5E9" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                                                    <Border Grid.Row="1" CornerRadius="8" Background="#163859" BorderBrush="#234B73" BorderThickness="1"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="ThemeCardAmber" Style="{StaticResource PillBtn}" Click="SelectTheme_Click" Tag="amber" Margin="8" Padding="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="ThemeDotAmber" Grid.Column="0" Width="20" Height="20" CornerRadius="10" BorderThickness="2" BorderBrush="{DynamicResource TextMuted}" Background="Transparent" VerticalAlignment="Top" Margin="0,2,12,0"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Kehribar Gecesi" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="Koyuya Dönük Sarı" FontSize="13" Foreground="{DynamicResource TextMuted}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Border Grid.Row="1" MinHeight="104" CornerRadius="12" Background="#18150E" BorderBrush="#524529" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="32*"/>
+                                                    <ColumnDefinition Width="68*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#221D12" BorderBrush="#3A311D" BorderThickness="0,0,1,0"/>
+                                                <Grid Grid.Column="1" Margin="14">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="*"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Width="56" Height="13" CornerRadius="6" Background="#F59E0B" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+                                                    <Border Grid.Row="1" CornerRadius="8" Background="#252014" BorderBrush="#3A311D" BorderThickness="1"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+                            </UniformGrid>
+                        </Grid>
+
+                        <!-- TAB: HAKKINDA -->
+                        <ScrollViewer x:Name="TabAbout" Visibility="Collapsed" Margin="26,26,26,22" VerticalScrollBarVisibility="Auto">
+                            <StackPanel HorizontalAlignment="Stretch">
+                                <TextBlock Text="Hakkında" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,14"/>
+
+                                <!-- Hero Card -->
+                                <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="16" Padding="22" Margin="0,0,0,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Width="58" Height="58" CornerRadius="15" Background="#1A1B20" BorderBrush="{DynamicResource BorderStrong}" BorderThickness="1" Padding="7" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <Image Source="pack://application:,,,/Assets/Icons/brand.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <TextBlock Text="QBLauncher Pro" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+                                                <Border Background="{DynamicResource AccentYellow}" CornerRadius="8" Padding="10,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="Sürüm 1.0.0" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentYellowFg}"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Text="Sık kullandığınız uygulamalara, klasörlere, belgelere, web sitelerine ve sistem araçlarına masaüstünde kalabalık yaratmadan, tek bir kısayol tuşuyla saliseler içinde ulaşmanızı sağlayan kişisel hızlı başlatıcınızdır." FontSize="14" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- How to Use: 3 Symmetrical Steps -->
+                                <TextBlock Text="Nasıl Kullanılır?" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,10"/>
+                                <UniformGrid Columns="3" Margin="0,0,0,14">
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="16" Margin="0,0,10,0">
+                                        <StackPanel>
+                                            <Border Width="28" Height="28" CornerRadius="9" Background="{DynamicResource NavActiveBg}" HorizontalAlignment="Left" Margin="0,0,0,10">
+                                                <TextBlock Text="1" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource NavActiveFg}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="Öğelerinizi Ekleyin" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                                            <TextBlock Text="Seçme ekranı veya Ön ayarlar bölümünden sık kullandığınız programları, klasörleri ve web sitelerini tek tıkla listenize ekleyin." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="16" Margin="0,0,10,0">
+                                        <StackPanel>
+                                            <Border Width="28" Height="28" CornerRadius="9" Background="{DynamicResource NavActiveBg}" HorizontalAlignment="Left" Margin="0,0,0,10">
+                                                <TextBlock Text="2" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource NavActiveFg}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="Kısayolunuzu Seçin" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                                            <TextBlock Text="Kısayollar bölümünden dinleyiciyi aktif edin ve dilediğiniz tuş kombinasyonunu (örneğin Alt + Space) belirleyin." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="16">
+                                        <StackPanel>
+                                            <Border Width="28" Height="28" CornerRadius="9" Background="{DynamicResource NavActiveBg}" HorizontalAlignment="Left" Margin="0,0,0,10">
+                                                <TextBlock Text="3" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource NavActiveFg}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="Anında Başlatın" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                                            <TextBlock Text="Bilgisayarınızda hangi ekranda olursanız olun kısayolunuza basın; açılan mini ekrandan tıklayarak veya 1–9 tuşlarıyla anında açın." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
+
+                                <!-- Keyboard Shortcuts Guide: 2x2 Symmetrical Grid -->
+                                <TextBlock Text="Klavye Kısayolları Rehberi" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,10"/>
+                                <UniformGrid Columns="2" Margin="0,0,0,14">
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="16" Margin="0,0,10,10">
+                                        <StackPanel>
+                                            <TextBlock Text="Seçilen Kısayol (Alt + Space)" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource AccentYellow}" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Mini seçme ekranını her yerden anında açar veya gizler." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="16" Margin="0,0,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="1 – 9 Rakam Tuşları" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource AccentYellow}" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Mini ekrandaki ilgili sıradaki uygulamayı fareye dokunmadan başlatır." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="16" Margin="0,0,10,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Ok Tuşları ve Enter" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource AccentYellow}" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Mini ekranda klavyeyle gezinip seçili öğeyi çalıştırır." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="16">
+                                        <StackPanel>
+                                            <TextBlock Text="F1 ve Esc Tuşları" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource AccentYellow}" Margin="0,0,0,4"/>
+                                            <TextBlock Text="F1 ana yönetim ekranına geçirir, Esc mini ekranı arka plana gizler." FontSize="13" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
+
+                                <!-- Credits & Design Inspiration: 2 Symmetrical Info Boxes -->
+                                <UniformGrid Columns="2">
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="18" Margin="0,0,10,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Geliştirici Bilgisi" FontSize="13" Foreground="{DynamicResource TextMuted}" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Bu yazılım tommyvercetti89 tarafından Antigravity ile geliştirilmiştir." FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource TextPrimary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="1" CornerRadius="14" Padding="18">
+                                        <StackPanel>
+                                            <TextBlock Text="Tasarım İlhamı" FontSize="13" Foreground="{DynamicResource TextMuted}" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Filee arayüzünden esinlenilmiştir." FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource TextPrimary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
+                            </StackPanel>
+                        </ScrollViewer>
+                        </Grid>
+                    </DockPanel>
+                </Grid>
+
+                <!-- ========================================================= -->
+                <!-- 2. ADD / EDIT ITEM MODAL                                  -->
+                <!-- ========================================================= -->
+                <Grid x:Name="ItemModalOverlay" Visibility="Collapsed" Background="#90000000">
+                    <Border Width="580" VerticalAlignment="Center" HorizontalAlignment="Center" Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderStrong}" BorderThickness="1" CornerRadius="18">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="32" ShadowDepth="8" Opacity="0.6" Color="#000000"/>
+                        </Border.Effect>
+                        <DockPanel LastChildFill="True">
+                            <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="0,0,0,1" Padding="20,15">
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource WinIconBtn}" Click="CloseModal_Click">
+                                        <Path Data="M18 6L6 18M6 6L18 18" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="2" Width="15" Height="15" Stretch="Uniform"/>
+                                    </Button>
+                                    <TextBlock x:Name="ModalTitleText" Text="Yeni Öğe Ekle" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </Border>
+
+                            <Border DockPanel.Dock="Bottom" Background="{DynamicResource BgSidebar}" BorderBrush="{DynamicResource BorderSubtle}" BorderThickness="0,1,0,0" Padding="20,14">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Style="{StaticResource PillBtn}" Content="İptal" Click="CloseModal_Click" Margin="0,0,10,0"/>
+                                    <Button Style="{StaticResource YellowPillBtn}" Content="Kaydet" Click="SaveModal_Click"/>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Margin="20,18">
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Görünen Ad" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                                        <TextBox x:Name="InpName" Style="{StaticResource LargeInput}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Alt Başlık" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                                        <TextBox x:Name="InpSubtitle" Style="{StaticResource LargeInput}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Kategori" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                                        <ComboBox x:Name="InpCategory" Style="{StaticResource ModernComboBox}" ItemContainerStyle="{StaticResource ModernComboBoxItem}">
+                                            <ComboBoxItem Content="Uygulama (.exe)" Tag="app"/>
+                                            <ComboBoxItem Content="Dosya veya Klasör" Tag="file"/>
+                                            <ComboBoxItem Content="Web Sitesi (URL)" Tag="web"/>
+                                            <ComboBoxItem Content="PowerShell / Sistem" Tag="system"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Özel İkon" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                                        <ComboBox x:Name="InpIcon" Style="{StaticResource ModernComboBox}" ItemContainerStyle="{StaticResource ModernComboBoxItem}">
+                                            <ComboBoxItem Content="Antigravity (Özel)" Tag="antigravity"/>
+                                            <ComboBoxItem Content="PowerShell Kabuğu" Tag="powershell"/>
+                                            <ComboBoxItem Content="Terminal / CMD" Tag="terminal"/>
+                                            <ComboBoxItem Content="Masaüstü Uygulaması" Tag="app"/>
+                                            <ComboBoxItem Content="Klasör" Tag="folder"/>
+                                            <ComboBoxItem Content="Belge / Dosya" Tag="file"/>
+                                            <ComboBoxItem Content="Web / Tarayıcı" Tag="globe"/>
+                                            <ComboBoxItem Content="Sistem / İşlemci" Tag="cpu"/>
+                                            <ComboBoxItem Content="Araçlar" Tag="calculator"/>
+                                            <ComboBoxItem Content="Hızlı Komut" Tag="bolt"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <StackPanel Margin="0,0,0,12">
+                                    <TextBlock Text="Hedef Yol, Komut veya URL" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="7"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="7"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="InpTarget" Grid.Column="0" Style="{StaticResource LargeInput}"/>
+                                        <Button Grid.Column="2" Style="{StaticResource PillBtn}" Content="Dosya Seç" Click="PickFile_Click"/>
+                                        <Button Grid.Column="4" Style="{StaticResource PillBtn}" Content="Klasör Seç" Click="PickFolder_Click"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Başlatma Argümanları (Opsiyonel)" FontSize="14" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                                        <TextBox x:Name="InpArgs" Style="{StaticResource LargeInput}"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="2" Background="{DynamicResource BgInput}" BorderBrush="{DynamicResource BorderStrong}" BorderThickness="1" CornerRadius="10" Height="38" Padding="12,0" VerticalAlignment="Bottom">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <CheckBox x:Name="InpAdmin" Style="{StaticResource YellowSwitch}"/>
+                                            <TextBlock Text="Yönetici olarak çalıştır" FontSize="13" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Toast Pill -->
+                <Border x:Name="ToastBorder" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" Padding="18,11" CornerRadius="10" Background="{DynamicResource AccentYellow}">
+                    <TextBlock x:Name="ToastText" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource AccentYellowFg}"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
