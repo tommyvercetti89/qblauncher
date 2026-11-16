@@ -41,3 +41,7 @@ Kurulum paketini derlemek için kök dizindeki `installer.iss` dosyasını Inno 
 ## Geliştirici ve Tasarım
 
 Bu yazılım **tommyvercetti89** tarafından **Antigravity** ile geliştirilmiştir. Arayüz tasarımında **Filee** uygulamasından esinlenilmiştir.
+
+## Lisans
+
+Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
